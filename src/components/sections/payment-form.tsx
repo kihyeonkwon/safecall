@@ -13,9 +13,13 @@ import {
   User,
   Check,
   Crown,
+  Smartphone,
 } from "lucide-react";
 
 const formSchema = z.object({
+  // Payment method
+  paymentMethod: z.enum(["kakaopay", "card"]).optional(),
+
   // Subscriber info
   subscriberName: z.string().min(2, "이름을 입력해주세요"),
   subscriberPhone: z.string().min(10, "올바른 전화번호를 입력해주세요"),
@@ -46,29 +50,60 @@ export function PaymentFormSection() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState<
+    "kakaopay" | "card" | null
+  >(null);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
 
   const onSubmit = async (data: FormData) => {
+    // Validate payment method selection
+    if (!selectedPayment) {
+      alert("결제 방법을 선택해주세요");
+      return;
+    }
+
     setIsSubmitting(true);
 
-    // Simulate payment processing
     try {
-      // Here you would integrate with actual payment provider (Toss Payments, etc.)
-      console.log("Payment data:", data);
+      if (selectedPayment === "kakaopay") {
+        // KakaoPay integration
+        const { requestKakaoPayment } = await import("@/lib/kakao-pay");
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+        const kakaoPayResponse = await requestKakaoPayment({
+          subscriberName: data.subscriberName,
+          subscriberEmail: data.subscriberEmail,
+          subscriberPhone: data.subscriberPhone,
+        });
 
-      setSubmitSuccess(true);
+        // Redirect to KakaoPay
+        if (kakaoPayResponse.next_redirect_pc_url) {
+          window.location.href = kakaoPayResponse.next_redirect_pc_url;
+        } else {
+          throw new Error("KakaoPay 리다이렉트 URL을 받지 못했습니다.");
+        }
+      } else if (selectedPayment === "card") {
+        // Credit card PG integration logic
+        console.log("Processing card payment...");
+
+        // For now, simulate success
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        setSubmitSuccess(true);
+      }
     } catch (error) {
       console.error("Payment error:", error);
+      alert(
+        error instanceof Error
+          ? error.message
+          : "결제 처리 중 오류가 발생했습니다. 다시 시도해주세요."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -273,6 +308,94 @@ export function PaymentFormSection() {
                 </div>
               </div>
 
+              {/* Payment Method Selection */}
+              <div className="mb-8">
+                <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                  <CreditCard className="w-5 h-5" />
+                  결제 방법 선택
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* KakaoPay Option */}
+                  <motion.div
+                    className={`relative p-6 border-2 rounded-xl cursor-pointer transition-all duration-300 ${
+                      selectedPayment === "kakaopay"
+                        ? "border-yellow-500 bg-yellow-50"
+                        : "border-slate-200 bg-white hover:border-yellow-300"
+                    }`}
+                    onClick={() => {
+                      setSelectedPayment("kakaopay");
+                      setValue("paymentMethod", "kakaopay");
+                    }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-yellow-400 rounded-lg flex items-center justify-center">
+                        <Smartphone className="w-6 h-6 text-yellow-800" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-bold text-slate-900 mb-1">
+                          카카오페이
+                        </h4>
+                        <p className="text-sm text-slate-600">
+                          간편하고 안전한 결제
+                        </p>
+                        <div className="text-xs text-green-600 font-medium mt-1">
+                          ✓ 대부분 사용자 보유 · 추천
+                        </div>
+                      </div>
+                      {selectedPayment === "kakaopay" && (
+                        <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center">
+                          <Check className="w-4 h-4 text-white" />
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+
+                  {/* Card PG Option */}
+                  <motion.div
+                    className={`relative p-6 border-2 rounded-xl cursor-pointer transition-all duration-300 ${
+                      selectedPayment === "card"
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-slate-200 bg-white hover:border-blue-300"
+                    }`}
+                    onClick={() => {
+                      setSelectedPayment("card");
+                      setValue("paymentMethod", "card");
+                    }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+                        <CreditCard className="w-6 h-6 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-bold text-slate-900 mb-1">
+                          신용카드
+                        </h4>
+                        <p className="text-sm text-slate-600">
+                          카드로 직접 결제
+                        </p>
+                        <div className="text-xs text-slate-500 mt-1">
+                          모든 카드사 지원
+                        </div>
+                      </div>
+                      {selectedPayment === "card" && (
+                        <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                          <Check className="w-4 h-4 text-white" />
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                </div>
+                {!selectedPayment && (
+                  <p className="text-red-500 text-sm mt-2">
+                    결제 방법을 선택해주세요
+                  </p>
+                )}
+              </div>
+
               {/* Agreements */}
               <div className="mb-8">
                 <h3 className="text-xl font-bold text-slate-900 mb-6">
@@ -332,18 +455,36 @@ export function PaymentFormSection() {
               <Button
                 type="submit"
                 size="lg"
-                disabled={isSubmitting}
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+                disabled={isSubmitting || !selectedPayment}
+                className={`w-full text-white transition-all duration-300 ${
+                  !selectedPayment
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : selectedPayment === "kakaopay"
+                    ? "bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700"
+                    : "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+                }`}
               >
                 {isSubmitting ? (
                   <div className="flex items-center gap-2">
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    결제 처리 중...
+                    {selectedPayment === "kakaopay"
+                      ? "카카오페이 결제 중..."
+                      : "카드 결제 중..."}
+                  </div>
+                ) : !selectedPayment ? (
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="w-5 h-5" />
+                    결제 방법을 선택해주세요
+                  </div>
+                ) : selectedPayment === "kakaopay" ? (
+                  <div className="flex items-center gap-2">
+                    <Smartphone className="w-5 h-5" />
+                    카카오페이로 연 120,000원 결제하기
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
-                    <CreditCard className="w-5 h-5" />연 120,000원 결제하기 (50%
-                    할인)
+                    <CreditCard className="w-5 h-5" />
+                    신용카드로 연 120,000원 결제하기
                   </div>
                 )}
               </Button>
