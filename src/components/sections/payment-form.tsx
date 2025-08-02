@@ -11,8 +11,6 @@ import {
   CreditCard,
   Shield,
   User,
-  Phone,
-  Mail,
   Check,
   Crown,
 } from "lucide-react";
@@ -53,7 +51,6 @@ export function PaymentFormSection() {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });

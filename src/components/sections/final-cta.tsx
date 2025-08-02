@@ -103,7 +103,7 @@ export function FinalCTASection() {
                 </h4>
               </div>
               <p className="text-slate-300 leading-relaxed">
-                "우리 부모님은 안전하다"는 확신을 갖고 살 수 있다면, 그 평안함은
+                &ldquo;우리 부모님은 안전하다&rdquo;는 확신을 갖고 살 수 있다면, 그 평안함은
                 얼마의 가치가 있을까요?
               </p>
             </div>

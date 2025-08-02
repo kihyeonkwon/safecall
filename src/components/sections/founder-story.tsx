@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { Heart, Users, Shield, Target } from "lucide-react";
-import Image from "next/image";
 
 export function FounderStorySection() {
   const [ref, inView] = useInView({
@@ -73,9 +72,9 @@ export function FounderStorySection() {
 
             <div className="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
               <p className="text-slate-700 italic text-sm leading-relaxed">
-                "개발자로서 AI 기술의 발전을 누구보다 가까이에서 지켜봤습니다.
+                &ldquo;개발자로서 AI 기술의 발전을 누구보다 가까이에서 지켜봤습니다.
                 그런데 그 기술이 악용되어 우리 부모님 세대를 위협한다는 사실을
-                알게 되었을 때, 가만히 있을 수 없었습니다."
+                알게 되었을 때, 가만히 있을 수 없었습니다.&rdquo;
               </p>
             </div>
           </motion.div>
@@ -94,7 +93,7 @@ export function FounderStorySection() {
               <div className="space-y-4 text-slate-700 leading-relaxed">
                 <p>
                   어느 날, 70대이신 아버지께서 이상한 전화를 받으셨다고
-                  하시더군요. "아들 목소리 같았는데 뭔가 이상했어"라고
+                  하시더군요. &ldquo;아들 목소리 같았는데 뭔가 이상했어&rdquo;라고
                   말씀하시는 아버지의 표정에서 불안함을 느꼈습니다.
                 </p>
                 <p>
@@ -162,8 +161,8 @@ export function FounderStorySection() {
         >
           <div className="bg-gradient-to-r from-slate-50 to-blue-50 p-8 rounded-2xl border border-slate-200">
             <p className="text-lg text-slate-700 italic leading-relaxed max-w-4xl mx-auto">
-              "여러분의 부모님도 제 부모님처럼 소중한 분들입니다. 함께
-              지켜나가요. SafeCall이 여러분 가족의 든든한 방패가 되겠습니다."
+              &ldquo;여러분의 부모님도 제 부모님처럼 소중한 분들입니다. 함께
+              지켜나가요. SafeCall이 여러분 가족의 든든한 방패가 되겠습니다.&rdquo;
             </p>
             <div className="mt-6">
               <div className="text-sm text-slate-500">SafeCall 창립자</div>

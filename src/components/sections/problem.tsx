@@ -144,7 +144,7 @@ export function ProblemSection() {
                   </h4>
                 </div>
                 <blockquote className="text-slate-300 italic mb-4 text-sm leading-relaxed">
-                  "{sample.scenario}"
+                  &ldquo;{sample.scenario}&rdquo;
                 </blockquote>
                 <div className="text-orange-400 font-semibold text-sm">
                   {sample.impact}
@@ -172,7 +172,7 @@ export function ProblemSection() {
             <div className="text-lg font-semibold">연합뉴스</div>
           </div>
           <p className="text-slate-400 text-sm mt-4">
-            "AI 딥페이크 기술을 악용한 신종 보이스피싱 급증 경고"
+            &ldquo;AI 딥페이크 기술을 악용한 신종 보이스피싱 급증 경고&rdquo;
           </p>
         </motion.div>
       </div>

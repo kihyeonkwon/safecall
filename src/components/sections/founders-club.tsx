@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import {
   Crown,
   Check,
-  Clock,
   Star,
   Zap,
   Users,

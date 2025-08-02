@@ -19,7 +19,7 @@ export function HeroSection() {
       setCurrentText((prev) => (prev + 1) % heroTexts.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [heroTexts.length]);
 
   const scrollToFoundersClub = () => {
     document
